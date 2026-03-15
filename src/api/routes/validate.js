@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { ValidationError } = require('./errors');
+const { ValidationError } = require('../middleware/errors');
 
 const cafeSchema = Joi.object({
   name: Joi.string().required().messages({

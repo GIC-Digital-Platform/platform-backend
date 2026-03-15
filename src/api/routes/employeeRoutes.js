@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { validateCreateEmployee, validateUpdateEmployee } = require('../middleware/validate');
+const { validateCreateEmployee, validateUpdateEmployee } = require('./validate');
 
 function employeeRoutes(employeeController) {
   const router = Router();

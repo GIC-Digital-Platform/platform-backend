@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const upload = require('../middleware/uploadMiddleware');
-const { validateCreateCafe, validateUpdateCafe } = require('../middleware/validate');
+const { validateCreateCafe, validateUpdateCafe } = require('./validate');
 
 function cafeRoutes(cafeController) {
   const router = Router();

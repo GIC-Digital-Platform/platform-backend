@@ -13,7 +13,19 @@ function createApp(container) {
 
   // Security & logging middleware
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-  app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
+  const allowedOrigins = (process.env.CORS_ORIGIN || '*').split(',').map((o) => o.trim());
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`CORS: origin ${origin} not allowed`));
+        }
+      },
+      credentials: true,
+    }),
+  );
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
   // Body parsing

@@ -2,7 +2,9 @@ const Joi = require('joi');
 const { ValidationError } = require('../middleware/errors');
 
 const cafeSchema = Joi.object({
-  name: Joi.string().required().messages({
+  name: Joi.string().min(6).max(10).required().messages({
+    'string.min': 'Name must be at least 6 characters',
+    'string.max': 'Name must be at most 10 characters',
     'any.required': 'Name is required',
   }),
   description: Joi.string().max(256).required().messages({
@@ -18,7 +20,9 @@ const cafeSchema = Joi.object({
 const cafeUpdateSchema = cafeSchema.fork(['name', 'description', 'location'], (f) => f.optional());
 
 const employeeSchema = Joi.object({
-  name: Joi.string().required().messages({
+  name: Joi.string().min(6).max(10).required().messages({
+    'string.min': 'Name must be at least 6 characters',
+    'string.max': 'Name must be at most 10 characters',
     'any.required': 'Name is required',
   }),
   email_address: Joi.string().email().required().messages({

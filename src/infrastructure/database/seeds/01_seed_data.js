@@ -11,28 +11,28 @@ exports.seed = async function (knex) {
   const cafes = await knex('cafes')
     .insert([
       {
-        id: 'CI11111111',
+        id: 'a1b2c3d4-0001-0001-0001-000000000001',
         name: 'The Daily Grind',
         description: 'Artisan coffee and fresh pastries in the heart of Orchard.',
         logo: null,
         location: 'Orchard',
       },
       {
-        id: 'CI22222222',
+        id: 'a1b2c3d4-0002-0002-0002-000000000002',
         name: 'Bay Brews',
         description: 'Specialty brews with a stunning Marina Bay view.',
         logo: null,
         location: 'Marina Bay',
       },
       {
-        id: 'CI33333333',
+        id: 'a1b2c3d4-0003-0003-0003-000000000003',
         name: 'Bugis Beans',
         description: 'Cozy neighbourhood cafe serving single-origin coffees.',
         logo: null,
-        location: 'Bugis',
+        location: 'Downtown Core',
       },
       {
-        id: 'CI44444444',
+        id: 'a1b2c3d4-0004-0004-0004-000000000004',
         name: 'East Coast Espresso',
         description: 'Beach-side cafe with cold brews and all-day brunch.',
         logo: null,
@@ -55,13 +55,13 @@ exports.seed = async function (knex) {
 
   // Assign employees to cafes with start dates
   await knex('cafe_employees').insert([
-    { employee_id: 'UIAB1CD23', cafe_id: 'CI11111111', start_date: '2022-01-15' },
-    { employee_id: 'UIBC2DE34', cafe_id: 'CI11111111', start_date: '2022-06-01' },
-    { employee_id: 'UICD3EF45', cafe_id: 'CI11111111', start_date: '2023-03-20' },
-    { employee_id: 'UIDE4FG56', cafe_id: 'CI22222222', start_date: '2021-09-10' },
-    { employee_id: 'UIEF5GH67', cafe_id: 'CI22222222', start_date: '2022-11-05' },
-    { employee_id: 'UIFG6HI78', cafe_id: 'CI33333333', start_date: '2023-01-01' },
-    { employee_id: 'UIGH7IJ89', cafe_id: 'CI33333333', start_date: '2023-07-14' },
-    { employee_id: 'UIHI8JK90', cafe_id: 'CI44444444', start_date: '2024-02-28' },
+    { employee_id: 'UIAB1CD23', cafe_id: 'a1b2c3d4-0001-0001-0001-000000000001', start_date: '2022-01-15' },
+    { employee_id: 'UIBC2DE34', cafe_id: 'a1b2c3d4-0001-0001-0001-000000000001', start_date: '2022-06-01' },
+    { employee_id: 'UICD3EF45', cafe_id: 'a1b2c3d4-0001-0001-0001-000000000001', start_date: '2023-03-20' },
+    { employee_id: 'UIDE4FG56', cafe_id: 'a1b2c3d4-0002-0002-0002-000000000002', start_date: '2021-09-10' },
+    { employee_id: 'UIEF5GH67', cafe_id: 'a1b2c3d4-0002-0002-0002-000000000002', start_date: '2022-11-05' },
+    { employee_id: 'UIFG6HI78', cafe_id: 'a1b2c3d4-0003-0003-0003-000000000003', start_date: '2023-01-01' },
+    { employee_id: 'UIGH7IJ89', cafe_id: 'a1b2c3d4-0003-0003-0003-000000000003', start_date: '2023-07-14' },
+    { employee_id: 'UIHI8JK90', cafe_id: 'a1b2c3d4-0004-0004-0004-000000000004', start_date: '2024-02-28' },
   ]);
 };

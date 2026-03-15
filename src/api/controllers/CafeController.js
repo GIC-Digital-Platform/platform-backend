@@ -2,6 +2,7 @@ const GetCafesQuery = require('../../application/cafes/queries/GetCafesQuery');
 const CreateCafeCommand = require('../../application/cafes/commands/CreateCafeCommand');
 const UpdateCafeCommand = require('../../application/cafes/commands/UpdateCafeCommand');
 const DeleteCafeCommand = require('../../application/cafes/commands/DeleteCafeCommand');
+const { uploadBuffer } = require('../../infrastructure/cloudinary/cloudinaryUploader');
 
 class CafeController {
   constructor({ mediator }) {
@@ -24,7 +25,7 @@ class CafeController {
 
   async createCafe(req, res, next) {
     try {
-      const logo = req.file ? req.file.filename : null;
+      const logo = req.file ? await uploadBuffer(req.file.buffer) : null;
       const data = await this.mediator.send(
         new CreateCafeCommand({ ...req.body, logo }),
       );
@@ -36,7 +37,7 @@ class CafeController {
 
   async updateCafe(req, res, next) {
     try {
-      const logo = req.file ? req.file.filename : undefined;
+      const logo = req.file ? await uploadBuffer(req.file.buffer) : undefined;
       const data = await this.mediator.send(
         new UpdateCafeCommand({ id: req.params.id, ...req.body, logo }),
       );

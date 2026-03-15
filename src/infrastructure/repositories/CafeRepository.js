@@ -14,9 +14,9 @@ class CafeRepository extends ICafeRepository {
         'cafes.description',
         'cafes.logo',
         'cafes.location',
-        this.db.raw('COUNT(cafe_employees.employee_id)::int AS employees'),
+        this.db.raw('COUNT(employees.id)::int AS employees'),
       )
-      .leftJoin('cafe_employees', 'cafes.id', 'cafe_employees.cafe_id')
+      .leftJoin('employees', 'cafes.id', 'employees.cafe_id')
       .groupBy('cafes.id')
       .orderBy('employees', 'desc');
 

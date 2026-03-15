@@ -40,12 +40,18 @@ const employeeSchema = Joi.object({
     'any.only': 'Gender must be Male or Female',
     'any.required': 'Gender is required',
   }),
-  cafe_id: Joi.string().uuid().optional().allow(null, ''),
-  start_date: Joi.date().iso().optional().allow(null, ''),
+  cafe_id: Joi.string().uuid().required().messages({
+    'any.required': 'Café assignment is required',
+    'string.guid': 'Invalid café ID',
+  }),
+  start_date: Joi.date().iso().required().messages({
+    'any.required': 'Start date is required',
+    'date.base': 'Start date must be a valid date',
+  }),
 });
 
 const employeeUpdateSchema = employeeSchema.fork(
-  ['name', 'email_address', 'phone_number', 'gender'],
+  ['name', 'email_address', 'phone_number', 'gender', 'cafe_id', 'start_date'],
   (f) => f.optional(),
 );
 

@@ -14,11 +14,11 @@ class EmployeeRepository extends IEmployeeRepository {
         'employees.email_address',
         'employees.phone_number',
         'employees.gender',
+        'employees.cafe_id',
+        'employees.start_date',
         'cafes.name as cafe_name',
-        'cafe_employees.start_date',
       )
-      .leftJoin('cafe_employees', 'employees.id', 'cafe_employees.employee_id')
-      .leftJoin('cafes', 'cafe_employees.cafe_id', 'cafes.id');
+      .leftJoin('cafes', 'employees.cafe_id', 'cafes.id');
 
     if (cafeName) {
       query.whereILike('cafes.name', `%${cafeName}%`);
@@ -34,6 +34,8 @@ class EmployeeRepository extends IEmployeeRepository {
         phone_number: row.phone_number,
         gender: row.gender,
         cafe: row.cafe_name || '',
+        cafe_id: row.cafe_id,
+        start_date: row.start_date,
         days_worked: row.start_date
           ? Math.floor((Date.now() - new Date(row.start_date).getTime()) / (1000 * 60 * 60 * 24))
           : 0,
@@ -46,68 +48,48 @@ class EmployeeRepository extends IEmployeeRepository {
   }
 
   async create(data, cafeId, startDate) {
-    return this.db.transaction(async (trx) => {
-      const [employee] = await trx('employees')
-        .insert({
-          id: data.id,
-          name: data.name,
-          email_address: data.emailAddress,
-          phone_number: data.phoneNumber,
-          gender: data.gender,
-        })
-        .returning('*');
+    const [employee] = await this.db('employees')
+      .insert({
+        id: data.id,
+        name: data.name,
+        email_address: data.emailAddress,
+        phone_number: data.phoneNumber,
+        gender: data.gender,
+        cafe_id: cafeId,
+        start_date: startDate,
+      })
+      .returning('*');
 
-      if (cafeId && startDate) {
-        await trx('cafe_employees').insert({
-          employee_id: employee.id,
-          cafe_id: cafeId,
-          start_date: startDate,
-        });
-      }
-
-      return employee;
-    });
+    return employee;
   }
 
   async update(id, data, cafeId, startDate) {
-    return this.db.transaction(async (trx) => {
-      const [employee] = await trx('employees')
-        .where({ id })
-        .update({
-          name: data.name,
-          email_address: data.emailAddress,
-          phone_number: data.phoneNumber,
-          gender: data.gender,
-          updated_at: trx.fn.now(),
-        })
-        .returning('*');
+    const updatePayload = {
+      name: data.name,
+      email_address: data.emailAddress,
+      phone_number: data.phoneNumber,
+      gender: data.gender,
+      updated_at: this.db.fn.now(),
+    };
 
-      // Remove existing cafe assignment
-      await trx('cafe_employees').where({ employee_id: id }).del();
+    if (cafeId !== undefined) updatePayload.cafe_id = cafeId;
+    if (startDate !== undefined) updatePayload.start_date = startDate;
 
-      if (cafeId && startDate) {
-        await trx('cafe_employees').insert({
-          employee_id: id,
-          cafe_id: cafeId,
-          start_date: startDate,
-        });
-      }
+    const [employee] = await this.db('employees')
+      .where({ id })
+      .update(updatePayload)
+      .returning('*');
 
-      return employee;
-    });
+    return employee;
   }
 
   async delete(id) {
-    // cafe_employees rows are deleted by CASCADE
     const deleted = await this.db('employees').where({ id }).del();
     return deleted > 0;
   }
 
   async findByCafeId(cafeId) {
-    return this.db('employees')
-      .join('cafe_employees', 'employees.id', 'cafe_employees.employee_id')
-      .where('cafe_employees.cafe_id', cafeId)
-      .select('employees.*');
+    return this.db('employees').where({ cafe_id: cafeId }).select('*');
   }
 }
 

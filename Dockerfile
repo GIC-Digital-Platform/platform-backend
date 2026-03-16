@@ -11,4 +11,4 @@ RUN mkdir -p uploads
 
 EXPOSE 4000
 
-CMD ["node", "src/server.js"]
+CMD ["sh", "-c", "npm run migrate && node src/server.js"]

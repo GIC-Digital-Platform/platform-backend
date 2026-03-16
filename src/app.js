@@ -7,6 +7,7 @@ const path = require('path');
 const cafeRoutes = require('./api/routes/cafeRoutes');
 const employeeRoutes = require('./api/routes/employeeRoutes');
 const errorHandler = require('./api/middleware/errorHandler');
+const { globalLimiter } = require('./api/middleware/rateLimiter');
 
 function createApp(container) {
   const app = express();
@@ -27,6 +28,7 @@ function createApp(container) {
     }),
   );
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+  app.use(globalLimiter);
 
   // Body parsing
   app.use(express.json());

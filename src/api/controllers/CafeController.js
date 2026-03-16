@@ -1,8 +1,13 @@
+const fs = require('fs');
 const GetCafesQuery = require('../../application/cafes/queries/GetCafesQuery');
 const CreateCafeCommand = require('../../application/cafes/commands/CreateCafeCommand');
 const UpdateCafeCommand = require('../../application/cafes/commands/UpdateCafeCommand');
 const DeleteCafeCommand = require('../../application/cafes/commands/DeleteCafeCommand');
-const { uploadBuffer } = require('../../infrastructure/cloudinary/cloudinaryUploader');
+const { uploadFile } = require('../../infrastructure/cloudinary/cloudinaryUploader');
+
+function cleanupTempFile(file) {
+  if (file?.path) fs.unlink(file.path, () => {});
+}
 
 class CafeController {
   constructor({ mediator }) {
@@ -25,7 +30,11 @@ class CafeController {
 
   async createCafe(req, res, next) {
     try {
-      const logo = req.file ? await uploadBuffer(req.file.buffer) : null;
+      let logo = null;
+      if (req.file) {
+        logo = await uploadFile(req.file.path);
+        cleanupTempFile(req.file);
+      }
       const data = await this.mediator.send(
         new CreateCafeCommand({ ...req.body, logo }),
       );
@@ -37,7 +46,11 @@ class CafeController {
 
   async updateCafe(req, res, next) {
     try {
-      const logo = req.file ? await uploadBuffer(req.file.buffer) : undefined;
+      let logo = undefined;
+      if (req.file) {
+        logo = await uploadFile(req.file.path);
+        cleanupTempFile(req.file);
+      }
       const data = await this.mediator.send(
         new UpdateCafeCommand({ id: req.params.id, ...req.body, logo }),
       );

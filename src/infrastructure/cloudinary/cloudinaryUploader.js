@@ -7,22 +7,14 @@ cloudinary.config({
 });
 
 /**
- * Uploads an image buffer to Cloudinary.
- * @param {Buffer} buffer - The file buffer from multer memoryStorage
+ * Uploads an image file from disk to Cloudinary, then deletes the temp file.
+ * @param {string} filePath - Absolute path to the temp file on disk
  * @param {string} folder - Cloudinary folder to organise uploads
  * @returns {Promise<string>} The secure URL of the uploaded image
  */
-function uploadBuffer(buffer, folder = 'cafe_logos') {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'image' },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result.secure_url);
-      },
-    );
-    stream.end(buffer);
-  });
+async function uploadFile(filePath, folder = 'cafe_logos') {
+  const result = await cloudinary.uploader.upload(filePath, { folder, resource_type: 'image' });
+  return result.secure_url;
 }
 
-module.exports = { uploadBuffer };
+module.exports = { uploadFile };

@@ -20,7 +20,7 @@ exports.seed = async function (knex) {
       name: 'Bay Brews',
       description: 'Specialty brews with a stunning Marina Bay view.',
       logo: null,
-      location: 'Marina Bay',
+      location: 'Marina Parade',
     },
     {
       id: 'a1b2c3d4-0003-0003-0003-000000000003',
